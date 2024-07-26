@@ -1,0 +1,89 @@
+"""
+给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。
+元素的 相对顺序 应该保持 一致 。然后返回 nums 中唯一元素的个数。
+
+考虑 nums 的唯一元素的数量为 k ，你需要做以下事情确保你的题解可以被通过：
+
+更改数组 nums ，使 nums 的前 k 个元素包含唯一元素，并按照它们最初在 nums 中出现的顺序排列。nums 的其余元素与 nums 的大小不重要。
+返回 k 。
+
+判题标准:
+系统会用下面的代码来测试你的题解:
+
+int[] nums = [...]; // 输入数组
+int[] expectedNums = [...]; // 长度正确的期望答案
+
+int k = removeDuplicates(nums); // 调用
+
+assert k == expectedNums.n;
+for (int i = 0; i < k; i++) {
+    assert nums[i] == expectedNums[i];
+}
+如果所有断言都通过，那么您的题解将被 通过。
+
+
+示例 1：
+输入：nums = [1,1,2]
+输出：2, nums = [1,2,_]
+解释：函数应该返回新的长度 2 ，并且原数组 nums 的前两个元素被修改为 1, 2 。不需要考虑数组中超出新长度后面的元素。
+
+示例 2：
+输入：nums = [0,0,1,1,1,2,2,3,3,4]
+输出：5, nums = [0,1,2,3,4]
+解释：函数应该返回新的长度 5 ， 并且原数组 nums 的前五个元素被修改为 0, 1, 2, 3, 4 。不需要考虑数组中超出新长度后面的元素。
+
+
+提示：
+1 <= nums.n <= 3 * 10^4
+-104 <= nums[i] <= 10^4
+nums 已按 升序 排列
+"""
+from typing import List
+
+
+# todo 简单的 快慢指针 & 循环不变量
+
+
+class Solution:
+    # 写法1（推荐！）
+    def removeDuplicates(self, nums: List[int]) -> int:
+        """原地删除有序数组中的重复项,返回删除后数组的新长度"""
+        n = len(nums)
+
+        # nums = [0,0,1,2,2,3,3]
+        # todo 循环不变量:nums[0..l)有序,且元素唯一
+        # l表示nums中上一个已经完成赋值的下标，0号元素肯定保留，因此l初始化为0，最后新数组长度是l+1
+        l = 0  
+        for r in range(1, n):  # r表示nums下一个需要跟l比对的元素下标
+            if nums[r] != nums[l]:
+                l += 1
+                nums[l] = nums[r]
+        
+        # 新数组长度        
+        return l + 1
+
+    # 写法2
+    def removeDuplicates2(self, nums: List[int]) -> int:
+        """原地删除有序数组中的重复项,返回删除后数组的新长度"""
+        n = len(nums)
+        if n == 1:
+            return 1
+
+        # nums = [0,0,1,2,2,3,3]
+        # todo 循环不变量:nums[0..l]有序,且元素唯一
+        # l表示nums中下一个需要赋值的下标,0号元素肯定保留，因此l初始化为1,最后新数组长度为l
+        l = 1 
+        for r in range(1, n):
+            if nums[r] != nums[l - 1]:
+                nums[l] = nums[r]
+                l += 1
+               
+        return l
+
+
+if __name__ == '__main__':
+    nums = [0, 0, 1, 2, 2, 3, 3]
+    print(nums)
+    print(Solution().removeDuplicates(nums))
+    nums = [0, 0, 1, 2, 2, 3, 3]
+    print(Solution().removeDuplicates2(nums))
