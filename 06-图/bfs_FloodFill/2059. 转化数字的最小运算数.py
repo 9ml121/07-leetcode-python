@@ -15,15 +15,14 @@ x ^ nums[i]（按位异或 XOR）
  
 
 示例 1：
-
 输入：nums = [2,4,12], start = 2, goal = 12
 输出：2
 解释：
 可以按 2 → 14 → 12 的转化路径进行，只需执行下述 2 次运算：
 - 2 + 12 = 14
 - 14 - 2 = 12
-示例 2：
 
+示例 2：
 输入：nums = [3,5,7], start = 0, goal = -4
 输出：2
 解释：
@@ -31,8 +30,8 @@ x ^ nums[i]（按位异或 XOR）
 - 0 + 3 = 3
 - 3 - 7 = -4
 注意，最后一步运算使 x 超过范围 0 <= x <= 1000 ，但该运算仍然可以生效。
-示例 3：
 
+示例 3：
 输入：nums = [2,8,16], start = 0, goal = 1
 输出：-1
 解释：
@@ -40,7 +39,6 @@ x ^ nums[i]（按位异或 XOR）
  
 
 提示：
-
 1 <= nums.length <= 1000
 -109 <= nums[i], goal <= 109
 0 <= start <= 1000
@@ -50,32 +48,35 @@ nums 中的所有整数互不相同
 
 from typing import List
 
-# todo bfs深度优化
 
+# todo bfs深度优化  类似 2998. 使 X 和 Y 相等的最少操作次数.py
 
 class Solution:
     def minimumOperations(self, nums: List[int], start: int, goal: int) -> int:
+        # 双数组实现 bfs
         q = [start]
         used = [False] * 1001
         used[start] = True
         ans = 0
+
         while q:
             ans += 1
-            new_q = []
-            for x in q:
+            tmp = q
+            q = []
+            for x in tmp:
                 for y in nums:
-                    for z in [x+y, x-y, x ^ y]:
+                    for z in [x + y, x - y, x ^ y]:
                         if z == goal:
                             return ans
                         if 0 <= z <= 1000 and not used[z]:
                             used[z] = True
-                            new_q.append(z)
-            q = new_q
+                            q.append(z)
+
         return -1
+
 
 if __name__ == '__main__':
     nums = [2, 4, 12]
     start = 2
     goal = 12
     print(Solution().minimumOperations(nums, start, goal))
-    

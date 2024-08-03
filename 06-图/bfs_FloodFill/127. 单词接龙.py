@@ -34,7 +34,7 @@ from typing import List
 
 
 
-# todo 单源最短路径，bfs解法
+# todo 单源最短路径Dijkstra算法，bfs解法
 # leetcode 752.打开转盘锁.py类似
 # leetcode 433. 最小基因变化
 
