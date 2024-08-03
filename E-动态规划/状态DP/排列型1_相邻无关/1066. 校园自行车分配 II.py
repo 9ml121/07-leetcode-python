@@ -49,7 +49,7 @@ from math import inf
 from typing import List
 
 
-# 状态压缩 + 记忆化搜索
+# 状态压缩 + 专题1-把X变成Y
 class Solution:
     def assignBikes(self, workers: List[List[int]], bikes: List[List[int]]) -> int:
         def dis(p1: list[int, int], p2: list[int, int]) -> int:
@@ -79,7 +79,7 @@ class Solution:
         return dfs(0, (1 << n)-1)
 
 
-# 写法 2：状态压缩 + 记忆化搜索
+# 写法 2：状态压缩 + 专题1-把X变成Y
 class Solution:
     def assignBikes(self, workers: List[List[int]], bikes: List[List[int]]) -> int:
         def Manhattan(p1, p2):

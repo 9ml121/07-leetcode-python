@@ -166,7 +166,7 @@ def digitSearch5(num):
         if level == len(s):
             return 1
 
-        if not limit and f[level] is not None:  # 记忆化搜索
+        if not limit and f[level] is not None:  # 专题1-把X变成Y
             return f[level]
 
         maxV = int(s[level]) if limit else 9
@@ -201,7 +201,7 @@ def dfs(level, limit, s, f):
         return 1
 
     # todo: 当前数位没有上限限制，才能重复路径，可以用memo, 否则不能用memo
-    if not limit and f[level] is not None:  # 记忆化搜索
+    if not limit and f[level] is not None:  # 专题1-把X变成Y
         return f[level]
 
     maxV = int(s[level]) if limit else 9

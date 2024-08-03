@@ -30,9 +30,9 @@ ui != vi
 所有 (ui, vi) 对都 互不相同（即，不含重复边）
 """
 
-
-import heapq
 import collections
+import heapq
+from math import inf
 from typing import List
 
 # todo 最小堆实现单源最短路径(有向图)
@@ -41,6 +41,8 @@ from typing import List
 https://blog.csdn.net/qfc_128220/article/details/127680161?spm=1001.2014.3001.5501
 
 https://labuladong.online/algo/data-structure/dijkstra/#%E7%A7%92%E6%9D%80%E4%B8%89%E9%81%93%E9%A2%98%E7%9B%AE
+
+https://leetcode.cn/problems/network-delay-time/solutions/2668220/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/
 """
 
 
@@ -48,31 +50,31 @@ class Solution:
     def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
         # 1.构建连接图(可以用字典，也可以用二维列表)
         # 对比来看，邻接表模拟图结构在内存消耗上代价更小，因此我们一般选择邻接表来模拟图结构
-        graph = collections.defaultdict(list)
+        g = collections.defaultdict(list)
         for u, v, w in times:
-            # 注意这里是单向图
-            graph[u].append((v, w))
+            g[u].append((v, w))  # 注意这里是单向图
 
-        # 2.记录最短路径的权重，这道题是从节点k开始发出信号，到达节点i的最短传递时间为disTo[i]
-        dist = [float('inf')] * (n+1)
+        # 2.记录最短路径的权重，这道题是从节点k开始发出信号，到达节点i的最短传递时间为dis[i]，也可以用字典
+        dist = [inf] * (n + 1)
         dist[k] = 0  # 初始化开始节点k传递时间为0
 
         # 3.使用一个小根堆来寻找「未确定节点」中与起点距离最近的点。
         # todo Dijkstra 算法使用优先级队列，主要是为了效率上的优化，类似一种贪心算法的思路。
-        pq = [(dist[k], k)]  # (传递时间，传递节点)
+        h = [(dist[k], k)]  # (传递时间，传递节点)
 
         # 4.最短路径问题，一般不用dfs
         # bfs可以结合贪心算法思维，让最短路径的查找变为类似于二叉树的二分查找
-        while pq:
-            time, u = heapq.heappop(pq)
-            for v, w in graph[u]:
-                if time + w < dist[v]:
-                    dist[v] = time + w
-                    heapq.heappush(pq, (dist[v], v))
+        while h:
+            du, u = heapq.heappop(h)
+            if du > dist[u]:  # u 之前出堆过
+                continue
+
+            for v, w in g[u]:
+                if du + w < dist[v]:
+                    dist[v] = du + w  # 更新 u 的邻居的最短路
+                    heapq.heappush(h, (dist[v], v))
 
         # 有效节点从1到n,如果到某个节点的传递时间为float('inf')，证明没有传递到
         ans = max(dist[1:])
         # 本题是 “从某个节点 K 发出一个信号。需要多久才能使所有节点都收到信号”，即本题要求从K节点到剩余其他各店的单源最短路径，并返回这里最短路径中最大的那个。
         return -1 if ans == float('inf') else ans
-
-

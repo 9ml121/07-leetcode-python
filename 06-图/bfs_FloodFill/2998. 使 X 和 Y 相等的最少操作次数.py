@@ -85,7 +85,7 @@ class Solution:
             step += 1
 
 
-# todo 方法二：记忆化搜索
+# todo 方法二：专题1-把X变成Y
 class Solution2:
     @cache
     def minimumOperationsToMakeEqual(self, x: int, y: int) -> int:

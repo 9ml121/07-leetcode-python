@@ -42,7 +42,7 @@ from functools import cache
 from math import inf
 from typing import List
 
-# 方法 1：记忆化搜索
+# 方法 1：专题1-把X变成Y
 """
 一、寻找子问题
 从左上角 (0,0) 走到右下角 (n−1,n−1)，再走回到左上角 (0,0)，相当于有两条从 (0,0) 到 (n−1,n−1) 的路径。

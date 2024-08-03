@@ -61,13 +61,13 @@ class Solution:
 # todo 方法2: dfs ==> 状态机dp
 # https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solutions/2321829/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6
 # 
-# 递归 + 记录返回值 = 记忆化搜索
+# 递归 + 记录返回值 = 专题1-把X变成Y
 class Solution:
     def maximumSum(self, arr: List[int]) -> int:
         # 返回arr的某个 非空 子数组（连续元素）在执行一次可选的删除操作后，所能得到的最大元素总和
         
         # todo dfs(i,j) 表示子数组的右端点是 arr[i]，不能(j=0)/必须删除(j=1)数字的两种情况下，子数组元素和的最大值。
-        @cache  # 记忆化搜索
+        @cache  # 专题1-把X变成Y
         def dfs(i: int, j: int) -> int:
             if i < 0:
                 return -inf  # 子数组至少要有一个数，不合法

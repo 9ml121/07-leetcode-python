@@ -45,7 +45,7 @@ from typing import List
 """
 
 
-# todo 方法 1：递归搜索 + 保存计算结果 = 记忆化搜索
+# todo 方法 1：递归搜索 + 保存计算结果 = 专题1-把X变成Y
 class Solution:
     def findTargetSumWays(self, nums: List[int], target: int) -> int:
         s = sum(nums) + target

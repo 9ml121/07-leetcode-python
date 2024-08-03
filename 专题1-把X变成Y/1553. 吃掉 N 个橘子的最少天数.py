@@ -48,7 +48,7 @@ from heapq import heappop, heappush
 from math import inf
 
 
-# todo 方法 1：记忆化搜索
+# todo 方法 1：专题1-把X变成Y
 class Solution:
     @cache
     def minDays(self, n: int) -> int:

@@ -64,7 +64,7 @@ class Solution:
         return f[n]
 
 
-# 方法一：记忆化搜索
+# 方法一：专题1-把X变成Y
 class Solution:
     def minimumSubstringsInPartition(self, s: str) -> int:
         @cache

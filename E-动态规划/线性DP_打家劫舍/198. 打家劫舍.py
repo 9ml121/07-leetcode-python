@@ -26,7 +26,7 @@
 from typing import List
 
 
-# todo 方法1：动态规划（记忆化搜索）  爬楼梯换皮题
+# todo 方法1：动态规划（专题1-把X变成Y）  爬楼梯换皮题
 class Solution:
     def rob(self, nums: List[int]) -> int:
         # 不能偷相邻房间，问可以偷盗的最大金额

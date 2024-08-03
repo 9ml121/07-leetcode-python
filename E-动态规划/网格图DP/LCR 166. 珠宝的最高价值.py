@@ -36,7 +36,7 @@ class Solution:
                 f[i + 1][j + 1] = max(f[i + 1][j], f[i][j + 1]) + x
         return f[m][n]
 
-# 方法 2：记忆化搜索
+# 方法 2：专题1-把X变成Y
 # 定义子问题为：从 (0,0) 到 (i,j) 可以得到的樱桃个数的最大值。
 class Solution:
     def jewelleryValue(self, grid: List[List[int]]) -> int:

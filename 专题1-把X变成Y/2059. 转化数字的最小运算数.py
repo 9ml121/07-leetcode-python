@@ -49,7 +49,7 @@ nums 中的所有整数互不相同
 from typing import List
 
 
-# 方法 1 bfs深度优先  类似 2998. 使 X 和 Y 相等的最少操作次数.py
+# todo bfs深度优化  类似 2998. 使 X 和 Y 相等的最少操作次数.py
 
 class Solution:
     def minimumOperations(self, nums: List[int], start: int, goal: int) -> int:
