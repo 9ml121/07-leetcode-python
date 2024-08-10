@@ -2,20 +2,22 @@
 请你为 最不经常使用（LFU）缓存算法设计并实现数据结构。
 
 实现 LFUCache 类：
+LFUCache(int capacity)
+    - 用数据结构的容量 capacity 初始化对象
+int get(int key)
+    - 如果键 key 存在于缓存中，则获取键的值，否则返回 -1 。
+void put(int key, int value)
+    - 如果键 key 已存在，则变更其值；
+    - 如果键不存在，请插入键值对。
+    - 当缓存达到其容量 capacity 时，则应该在插入新项之前，移除最不经常使用的项。
+    在此问题中，当存在平局（即两个或更多个键具有相同使用频率）时，应该去除 最近最久未使用 的键。
 
-LFUCache(int capacity) - 用数据结构的容量 capacity 初始化对象
-int get(int key) - 如果键 key 存在于缓存中，则获取键的值，否则返回 -1 。
-void put(int key, int value) - 如果键 key 已存在，则变更其值；如果键不存在，请插入键值对。当缓存达到其容量 capacity 时，则应该在插入新项之前，移除最不经常使用的项。在此问题中，当存在平局（即两个或更多个键具有相同使用频率）时，应该去除 最近最久未使用 的键。
 为了确定最不常使用的键，可以为缓存中的每个键维护一个 使用计数器 。使用计数最小的键是最久未使用的键。
-
 当一个键首次插入到缓存中时，它的使用计数器被设置为 1 (由于 put 操作)。对缓存中的键执行 get 或 put 操作，使用计数器的值将会递增。
-
 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
 
 
-
 示例：
-
 输入：
 ["LFUCache", "put", "put", "get", "put", "get", "get", "put", "get", "get", "get"]
 [[2], [1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]]
@@ -46,56 +48,18 @@ lfu.get(4);      // 返回 4
 
 提示：
 
-0 <= capacity <= 104
-0 <= key <= 105
-0 <= value <= 109
+0 <= capacity <= 10^4
+0 <= key <= 10^5
+0 <= value <= 10^9
 最多调用 2 * 105 次 get 和 put 方法
 """
 import collections
 
-"""
-当涉及到设计 LFU（Least Frequently Used）缓存时，我们需要使用一些数据结构来维护缓存的状态。
 
-以下是一种可能的解题思路：
-1.我们可以使用哈希表 key_to_node 来存储键值对，并且每个键对应一个节点对象 Node。这个哈希表将键映射到节点，可以用于快速查找键对应的节点。
-
-2.我们还需要使用哈希表 freq_to_head 来存储频率和双向链表头节点的映射关系。
-    - 其中，频率是指节点在缓存中被访问的次数。
-    - 这个哈希表将频率映射到链表头节点，我们可以通过频率快速找到对应的链表。
-    
-3.我们需要定义一个节点类 Node，
-    - 其中包含键、值、频率以及前驱和后继节点的引用。
-    - 这个节点类将被用作双向链表的节点。
-    
-4.双向链表的头节点 head 和尾节点 tail 将用于维护链表的结构。
-    - 我们在初始化时创建一个空的头节点和尾节点，并将它们连接起来。
-    
-5.当调用 get(key) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中。
-    - 如果存在，我们获取对应的节点，并将其频率增加 1。
-    - 然后，我们将该节点从旧频率对应的链表中移除，并将其插入到新频率对应的链表中。
-    - 最后，我们返回节点的值。
-    
-6.当调用 put(key, value) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中。
-    - 如果存在，我们更新节点的值，并将其频率增加 1。
-    - 然后，我们将该节点从旧频率对应的链表中移除，并将其插入到新频率对应的链表中。
-    - 如果缓存已满，我们还需要删除最小频率对应的链表中的最老节点。
-    - 最后，我们在 key_to_node 哈希表中创建新的键值对，并将新节点插入到频率为 1 的链表中。
-    
-6.当频率为 1 的链表为空时，我们需要更新 min_freq 变量为 2。
-
-通过维护 key_to_node 哈希表和 freq_to_head 哈希表，以及使用双向链表和节点对象来管理缓存的状态，我们可以实现 LFU 缓存。
-以上是一种基本的解题思路，您可以根据具体需求进行调整和优化。
-"""
-
-# 方法1：
-"""
-在上述代码的基础上，还可以进一步改善空间效率。目前的实现中，使用了三个字典来存储键值对、键的频次和频次对应的键。这样会占用较多的内存空间。
-一种改进的方法是将频次对应的键使用双向链表来存储，而不是使用字典。这样可以有效地减少内存占用，并且在插入和删除操作上也更加高效。
-"""
-
-
+# 方法1：字典 + 双向链表
 class Node:
-    # 定义节点类，包括键、值、频次、前节点、后节点
+    # 4.定义双向链表节点类，其中包含键、值、频率以及前驱和后继节点的引用。
+    # 这个节点类将被用作双向链表的节点。
     def __init__(self, key=None, val=None):
         self.key = key
         self.val = val
@@ -105,46 +69,49 @@ class Node:
 
 
 class DoublyLinkedList:
-    # 定义双向链表类，包括虚拟头节点和尾节点
+    # 5.定义双向链表类，初始化虚拟头节点和尾节点，并将它们连接起来。
     def __init__(self):
         self.head = Node()  # dummy head node
         self.tail = Node()  # dummy tail node
         self.head.next = self.tail
         self.tail.prev = self.head
 
-    # 在头节点后添加节点
     def add_to_head(self, node):
+        # 在头节点后添加节点
         node.next = self.head.next
         node.prev = self.head
         self.head.next.prev = node
         self.head.next = node
 
-    # 删除节点
     def remove_node(self, node):
+        # 删除节点
         node.prev.next = node.next
         node.next.prev = node.prev
 
-    # 移除尾节点
-    def remove_last(self) -> 'Node':
+    def remove_last(self) -> Node:
+        # 移除尾节点
         if self.head.next == self.tail:
-            return None
+            return
         last_node = self.tail.prev
         self.remove_node(last_node)
         return last_node
 
 
 class LFUCache:
-    # 定义最不频繁使用缓存类，包括容量、键对应的节点、频次对应的节点、最小频次和有效节点数
     def __init__(self, capacity: int):
+        # LFU（Least Frequently Used）最不频繁使用缓存类
+        # 1.缓存最大容量、键对应的节点、频次对应的节点、最小频次和有效节点数
         self.capacity = capacity
-        self.key_to_node = {}  # 存储键对应的双链表节点
-        # 注意：freq_to_node对应的双链表是为了实现缓存容量已满，对于访问频次相同的健，优先删除最旧的健而设计的
-        self.freq_to_node = collections.defaultdict(DoublyLinkedList)  # 存储频次对应的双链表节点
+        # 2.哈希表 key_to_node 来存储键值对，每个键对应一个双向链表节点Node，用于快速查找键对应的节点。
+        self.key_to_node = {}
+        # 3.哈希表 freq_to_head 来存储频率和双向链表头节点的映射关系。
+        # 其中，频率是指节点在缓存中被访问的次数。作用是快速找到访问频率最低的所有链表
+        self.freq_to_node = collections.defaultdict(DoublyLinkedList)
         self.min_freq = 0  # 记录最小频次
         self.size = 0  # 记录有效节点数
 
-    # 获取键对应的值
     def get(self, key: int) -> int:
+        # 如果键 key 存在于缓存中，则获取键的值，否则返回 -1
         if key not in self.key_to_node:
             return -1
 
@@ -152,37 +119,37 @@ class LFUCache:
         self.increase_freq(node)
         return node.value
 
-    # 插入或更新键值
     def put(self, key: int, value: int) -> None:
+        # 插入或更新键值
         if self.capacity == 0:
             return
 
         if key in self.key_to_node:
-            # 若键已存在，则更新值并增加频次
+            # 1.若键已存在，则更新值并增加频次
             node = self.key_to_node[key]
-            node.value = value
+            node.val = value
             self.increase_freq(node)
         else:
-            # 如果是插入一个新的建，需要先判断容量是否已满
+            # 2.如果是插入一个新的建，需要先判断缓存是否已满
             if self.size == self.capacity:
-                # 如果容量已满，需要淘汰频次最低且最旧的键
+                # 如果缓存已满，需要删除最小频率对应的链表中的最老节点。
                 self.remove_min_freq_key()
                 self.size -= 1
 
-            # 插入新节点，并将最小频次更新为1
+            # 3.将新节点插入到频率为 1 的链表中，并将最小频次更新为1
             new_node = Node(key, value)
             self.key_to_node[key] = new_node
             self.freq_to_node[1].add_to_head(new_node)
             self.min_freq = 1
             self.size += 1
 
-    # 增加节点频次
     def increase_freq(self, node: Node) -> None:
+        # 增加节点频次
         freq = node.freq
         # 1.先删除旧频次node节点
         freq_node = self.freq_to_node[freq]
         freq_node.remove_node(node)
-        # 2.若旧频次对应的链表为空，且旧频次就是最小频次，则更新最小频次
+        # 2.当频率为 1 的链表为空时，我们需要更新 min_freq 变量为 2。
         if freq_node.head.next == freq_node.tail and freq == self.min_freq:
             self.min_freq += 1
 
@@ -200,6 +167,8 @@ class LFUCache:
 # obj = LFUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)
+
+
 # 方法2：三哈希表 + 调用OrderedDict
 class LFUCache1:
 

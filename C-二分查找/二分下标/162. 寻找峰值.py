@@ -43,7 +43,7 @@ class Solution:
         return i
 
 
-# 二分查找，时间复杂度O(logN)
+# 二分查找: 左闭右开写法
 class Solution2:
     def findPeakElement(self, nums: List[int]) -> int:
         left, right = 0, len(nums) - 1

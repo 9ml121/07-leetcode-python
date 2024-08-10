@@ -33,10 +33,12 @@ minStack.getMin();   --> 返回 -2.
 pop、top 和 getMin 操作总是在 非空栈 上调用
 push, pop, top, and getMin最多被调用 3 * 10^4 次
 """
+from math import inf
+
 
 # todo 单调栈
 
-# 方法1：使用两个栈
+# 方法1：使用两个栈(推荐！）
 class MinStack:
     # 能在常数时间内检索到最小元素的栈
     def __init__(self):
@@ -56,7 +58,6 @@ class MinStack:
         top = self.stack.pop()
         if self.minStack and self.minStack[-1] == top:
             self.minStack.pop()
-        return top
 
     def top(self) -> int:
         return self.stack[-1]
@@ -65,12 +66,11 @@ class MinStack:
         return self.minStack[-1]
 
 
-
 # 方法2：使用一个栈
 class MinStack:
     # 能在常数时间内检索到最小元素的栈
     def __init__(self):
-        self.minV = float('inf')
+        self.minV = inf
         self.stack = []
 
     def push(self, x: int) -> None:
@@ -98,7 +98,6 @@ class MinStack:
 
     def getMin(self) -> int:
         return self.minV
-
 
 # Your MinStack object will be instantiated and called as such:
 # obj = MinStack()

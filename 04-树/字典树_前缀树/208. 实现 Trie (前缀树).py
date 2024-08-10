@@ -4,9 +4,14 @@ Trie（发音类似 "try"）或者说 前缀树 是一种树形数据结构，�
 
 请你实现 Trie 类：
 Trie() 初始化前缀树对象。
-void insert(String word) 向前缀树中插入字符串 word 。
-boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
-boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
+void insert(String word)
+    向前缀树中插入字符串 word 。
+
+boolean search(String word)
+    如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
+
+boolean startsWith(String prefix)
+    如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
 
 
 示例：
@@ -43,36 +48,34 @@ class Node(object):
 
 
 class Trie(object):
-
     def __init__(self):
         self.root = Node()
 
-    def insert(self, word):
-        current = self.root
+    def insert(self, word: str) -> None:
+        curr = self.root
         for w in word:
-            current = current.children[w]
-        current.isword = True
+            curr = curr.children[w]
+        curr.isword = True
 
-    def search(self, word):
-        current = self.root
+    def search(self, word: str) -> bool:
+        curr = self.root
         for w in word:
-            current = current.children.get(w)
-            if current is None:
+            curr = curr.children.get(w)
+            if not curr:
                 return False
-        return current.isword
+        return curr.isword
 
-    def startsWith(self, prefix):
-        current = self.root
+    def startsWith(self, prefix: str) -> bool:
+        curr = self.root
         for w in prefix:
-            current = current.children.get(w)
-            if current is None:
+            curr = curr.children.get(w)
+            if not curr:
                 return False
         return True
 
 
 # 实现方法 2：利用数组存储多叉树的孩子节点
-class Trie2:
-
+class Trie:
     def __init__(self):
         self.children = [None] * 26  # 该节点的所有子节点。
         self.isEnd = False  # 表示从根节点到当前节点为止，该路径是否形成了一个有效的字符串。

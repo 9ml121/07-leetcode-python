@@ -44,6 +44,7 @@ myStack.empty(); // 返回 False
 
 from collections import deque
 
+
 # 方法1: 使用两个队列 queue1 和 queue2 来实现栈的操作
 class MyStack:
     def __init__(self):
@@ -61,7 +62,7 @@ class MyStack:
         self.help_q.append(x)
         while self.q:
             self.help_q.append(self.q.popleft())
-            
+
         self.q, self.help_q = self.help_q, self.q
 
     def pop(self) -> int:
@@ -81,7 +82,6 @@ class MyStack:
         Returns whether the stack is empty.
         """
         return not self.q
-
 
 
 # 方法2：使用一个队列来实现栈(进阶)

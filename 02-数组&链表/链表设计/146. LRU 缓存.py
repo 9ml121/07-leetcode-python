@@ -1,18 +1,22 @@
 """
 请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
 实现 LRUCache 类：
-LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
+LRUCache(int capacity)
+    以 正整数 作为容量 capacity 初始化 LRU 缓存
 
-int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
+int get(int key)
+    如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
 
-void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
+void put(int key, int value)
+    如果关键字 key 已经存在，则变更其数据值 value ；
+    如果不存在，则向缓存中插入该组 key-value 。
+    如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
 
 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
 
 
 
 示例：
-
 输入
 ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
 [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
@@ -33,108 +37,84 @@ lRUCache.get(4);    // 返回 4
 
 
 提示：
-
 1 <= capacity <= 3000
 0 <= key <= 10000
 0 <= value <= 105
-最多调用 2 * 105 次 get 和 put
+最多调用 2 * 10^5 次 get 和 put
 """
 
-"""
-当涉及到设计 LRU（Least Recently Used）缓存时，我们可以使用一些数据结构来维护缓存的状态。
-以下是一种可能的解题思路：
-1.我们可以使用哈希表 key_to_node 来存储键值对，并且每个键对应一个节点对象 Node。
-    这个哈希表将键映射到节点，可以用于快速查找键对应的节点。
-    
-2.我们还需要使用双向链表来存储节点的访问顺序。
-    - 链表的头部表示最近访问的节点，尾部表示最久未访问的节点。
-    - 我们可以使用两个特殊的节点 head 和 tail 来表示链表的头部和尾部。
-    
-3.我们需要定义一个节点类 Node，其中包含键、值、前驱和后继节点的引用。
-    - 这个节点类将被用作双向链表的节点。
-    
-4.当调用 get(key) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中。
-    - 如果存在，我们获取对应的节点，并将其移到链表的头部表示最近访问。
-    - 然后，我们返回节点的值。
-    
-5.当调用 put(key, value) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中。
-    - 如果存在，我们更新节点的值，并将其移到链表的头部表示最近访问。
-    - 如果不存在，我们创建一个新的节点，并将其插入到链表的头部。
-        - 如果缓存已满，我们还需要删除链表的尾部节点表示最久未访问，并从 key_to_node 哈希表中删除对应的键值对。
-        - 最后，我们在 key_to_node 哈希表中创建新的键值对，并将新节点插入到链表的头部。
-
-通过维护 key_to_node 哈希表和双向链表来管理缓存的状态，我们可以实现 LRU 缓存。
-
-以上是一种基本的解题思路，您可以根据具体需求进行调整和优化。
-"""
 import collections
 
 
-# 方法一：字典 + 双向链表
+# 方法一：通过维护 key_to_node 哈希表和双向链表来管理缓存的状态，我们可以实现 LRU 缓存。
 class Node(object):
+    # 3.定义一个节点类 Node，其中包含键、值、前驱和后继节点的引用，这个节点类将被用作双向链表的节点
     def __init__(self, key=None, value=None):
-        self.prev = None
-        self.next = None
         self.key = key
         self.val = value
+        self.prev = None
+        self.next = None
 
 
 class LRUCache:
     # 初始化方法，用于创建一个容量为capacity的 LRU 缓存对象
     def __init__(self, capacity: int):
         self.capacity = capacity
+        # 1.使用字典来存储 key:node, 用来快速查找 key对应的节点
         self.key_to_node = {}
-        # 构建一头一尾2个虚拟节点， 初始化链表为 head <-> tail
+        # 2.使用双向链表来存储节点的访问顺序，链表的头部表示最近访问的节点，尾部表示最久未访问的节点
+        # 初始化构建一头一尾2个虚拟节点， 初始化链表为 head <-> tail
         self.head = Node()
         self.tail = Node()
         self.head.next = self.tail
         self.tail.prev = self.head
 
     def get(self, key: int) -> int:
+        # 4.当调用 get(key) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中
         if key not in self.key_to_node:
             return -1
-        # 如果 key 存在，先通过哈希表定位，再移到尾部
+        # 如果 key 存在，先通过哈希表定位获取对应的节点，并将其移到链表的尾部表示最近访问，最后返回节点的值
         node = self.key_to_node[key]
-        self._moveToTail(node)
-        return node.value
+        self._move_to_end(node)
+        return node.val
 
     def put(self, key: int, value: int) -> None:
-        # 1.先判断添加的key是否存在_map，如果存在，先更新链表该节点val，再移动到链表结尾
+        # 5.当调用 put(key, value) 方法时，我们首先检查键是否存在于 key_to_node 哈希表中。
         if key in self.key_to_node:
+            # 5.1 如果key存在，我们更新节点的值，并将其移到链表的尾部表示最近访问。
             node = self.key_to_node[key]
-            node.value = value
-            self._moveToTail(node)
+            node.val = value
+            self._move_to_end(node)
         else:
-            # 2.如果key是第一次添加，需要先判断缓存是否还有容量空间
+            # 5.2 如果key是第一次添加，需要先判断缓存是否还有容量空间
             if len(self.key_to_node) == self.capacity:
-                # 如果到达容量上限，需要删除缓存中最旧的key, 并维护key_to_node
-                node = self.head.next
-                self._remove(node)
+                # 如果缓存已满，我们还需要删除链表的头部节点表示最久未访问，并从 key_to_node 哈希表中删除对应的键值对
+                node = self._pop_head()
                 del self.key_to_node[node.key]
-            # 然后构建一个新节点加入到双向链表尾部
+            # 然后在 key_to_node 哈希表中创建新的键值对，并将新节点插入到链表的尾部
             newNode = Node(key, value)
-            self._addTail(newNode)
             self.key_to_node[key] = newNode
+            self._append_tail(newNode)
 
-    # 将存在的节点移动到链表末尾
-    def _moveToTail(self, node) -> None:
+    def _move_to_end(self, node) -> None:
+        # 将存在的节点移动到链表末尾
         # OrderedDict会先将这个节点从链表中删除，然后再将它插入到链表的末尾。
-        self._remove(node)
-        self._addTail(node)
+        self._pop(node)
+        self._append_tail(node)
 
-    # 删除链表任意一个有效节点
-    def _remove(self, node) -> None:
+    def _pop_head(self) -> Node:
+        # 删除头节点，并返回被删除的头节点
+        node = self.head.next
+        self._pop(node)
+        return node
+
+    def _pop(self, node) -> None:
+        # 删除链表任意一个有效节点
         node.prev.next = node.next
         node.next.prev = node.prev
 
-    # 删除头节点，并返回被删除的头节点
-    def _removeHead(self) -> Node:
-        node = self.head.next
-        self._remove(node)
-        return node
-
-    # 将一个新的节点添加到尾节点
-    def _addTail(self, node) -> None:
+    def _append_tail(self, node) -> None:
+        # 将一个新的节点添加到双向链表的尾节点
         self.tail.prev.next = node
         node.prev = self.tail.prev
         node.next = self.tail
